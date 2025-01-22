@@ -25,6 +25,13 @@
             border-radius: 4px;
             border-left: 4px solid #2196F3;
         }
+        .error-block {
+            background-color: #fff5f5;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            border-left: 4px solid #f44336;
+        }
         .function-name {
             font-weight: bold;
             color: #2196F3;
@@ -46,6 +53,10 @@
             font-size: 0.9em;
             margin-bottom: 5px;
         }
+        .error-message {
+            color: #f44336;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -60,7 +71,7 @@
             const data = JSON.parse(event.data);
             const timestamp = new Date().toLocaleString();
             
-            data.data.forEach(function(result) {
+            data.message.forEach(function(result) {
                 const functionBlock = document.createElement('div');
                 functionBlock.className = 'function-block';
                 
@@ -86,6 +97,26 @@
                 functionBlock.appendChild(variables);
                 resultsDiv.insertBefore(functionBlock, resultsDiv.firstChild);
             });
+        });
+
+        eventSource.addEventListener('parser_error', function(event) {
+            const data = JSON.parse(event.data);
+            const timestamp = new Date().toLocaleString();
+            
+            const errorBlock = document.createElement('div');
+            errorBlock.className = 'error-block';
+            
+            const timestampDiv = document.createElement('div');
+            timestampDiv.className = 'timestamp';
+            timestampDiv.textContent = timestamp;
+            
+            const errorMessage = document.createElement('div');
+            errorMessage.className = 'error-message';
+            errorMessage.textContent = `Error: ${data.message.error}`;
+            
+            errorBlock.appendChild(timestampDiv);
+            errorBlock.appendChild(errorMessage);
+            resultsDiv.insertBefore(errorBlock, resultsDiv.firstChild);
         });
 
         eventSource.onerror = function(error) {
