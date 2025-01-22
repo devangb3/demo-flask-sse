@@ -1,0 +1,4 @@
+flask
+flask-sse
+redis
+kafka-python
